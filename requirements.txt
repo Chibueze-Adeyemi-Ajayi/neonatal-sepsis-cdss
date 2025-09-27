@@ -4,3 +4,4 @@ pandas
 spacy
 scikit-learn
 joblib
+gunicorn
