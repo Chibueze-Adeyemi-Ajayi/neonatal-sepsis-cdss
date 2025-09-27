@@ -18,8 +18,13 @@
         }
         :root {
             --primary-color: #059669;
-            --primary-color-light: #34d399;
+            --primary-color-light: #d1fae5;
             --primary-color-dark: #047857;
+            --gray-bg: #f3f4f6;
+            --gray-card: #ffffff;
+            --gray-border: #e5e7eb;
+            --gray-text: #374151;
+            --gray-muted: #6b7280;
         }
         .bg-primary { background-color: var(--primary-color) !important; }
         .bg-primary-light { background-color: var(--primary-color-light) !important; }
@@ -28,6 +33,88 @@
         .border-primary { border-color: var(--primary-color) !important; }
         .hover\:bg-primary-dark:hover { background-color: var(--primary-color-dark) !important; }
         .focus\:ring-primary:focus { box-shadow: 0 0 0 3px rgba(5,150,105,0.3) !important; }
+        .app-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--gray-card);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .header p {
+            font-size: 1rem;
+            color: var(--gray-muted);
+            margin-top: 0.5rem;
+        }
+        .symptom-list {
+            display: grid;
+            gap: 1rem;
+        }
+        .symptom-item {
+            background-color: var(--gray-border);
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            border: 2px solid transparent;
+        }
+        .symptom-item.selected {
+            background-color: var(--primary-color-light);
+            border: 2px solid var(--primary-color);
+        }
+        .symptom-label {
+            font-weight: 500;
+            color: var(--gray-text);
+            flex-grow: 1;
+        }
+        .symptom-checkbox {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 0.25rem;
+            border: 2px solid var(--gray-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .symptom-item.selected .symptom-checkbox {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .symptom-checkbox svg {
+            display: none;
+        }
+        .symptom-item.selected .symptom-checkbox svg {
+            display: block;
+        }
+        .diagnose-button {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border-radius: 1rem;
+            transition: background-color 0.2s ease;
+            margin-top: 2rem;
+            cursor: pointer;
+            text-align: center;
+        }
+        .diagnose-button:hover {
+            background-color: var(--primary-color-dark);
+        }
     </style>
 </head>
 <body class="bg-primary-light p-4">
@@ -179,46 +266,40 @@
             };
 
             return (
-                <div className="min-h-screen bg-primary-light flex items-center justify-center p-4 font-sans">
-                    <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
-                        <h1 className="text-3xl font-bold text-center text-primary mb-6">Neonatal Sepsis CDSystem</h1>
-                        <p className="text-center text-primary mb-8 opacity-80">
-                            Select your baby's symptoms below to get a preliminary assessment.
-                        </p>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                            {allSymptoms.map((symptom, index) => (
-                                <div key={index} className="flex items-center space-x-3 bg-primary-light bg-opacity-10 p-3 rounded-lg border border-primary hover:bg-primary-light transition duration-200">
-                                    <input
-                                        type="checkbox"
-                                        id={`symptom-${index}`}
-                                        checked={selectedSymptoms.includes(symptom)}
-                                        onChange={() => handleSymptomChange(symptom)}
-                                        className="h-5 w-5 text-primary bg-white border-primary rounded focus:ring-primary"
-                                    />
-                                    <label htmlFor={`symptom-${index}`} className="text-primary select-none">
-                                        {symptom}
-                                    </label>
-                                </div>
-                            ))}
+                <div className="min-h-screen bg-gray-100 p-4 sm:p-8">
+                    <div className="app-container">
+                        <div className="header">
+                            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800">Clinical Decision Support System for Neonatal Sepsis</h1>
+                            <p className="text-sm sm:text-base text-gray-500 mt-2">
+                                A final year project by: Ajayi Chibueze Adeyemi CPE/19/1284
+                            </p>
                         </div>
-
-                        <div className="flex justify-center">
-                            <button
-                                onClick={getPrediction}
-                                disabled={selectedSymptoms.length === 0}
-                                className={`
-                                    px-8 py-3 rounded-full text-white font-semibold transition-all duration-300
-                                    ${selectedSymptoms.length > 0
-                                        ? 'bg-primary hover:bg-primary-dark transform hover:scale-105 shadow-md'
-                                        : 'bg-primary opacity-50 cursor-not-allowed'
-                                    }
-                                `}
-                            >
-                                Get Prediction
-                            </button>
+                        <div className="symptom-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {allSymptoms.map((symptom, index) => {
+                                const selected = selectedSymptoms.includes(symptom);
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`symptom-item${selected ? ' selected' : ''}`}
+                                        onClick={() => handleSymptomChange(symptom)}
+                                    >
+                                        <span className="symptom-label">{symptom}</span>
+                                        <span className="symptom-checkbox">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                );
+                            })}
                         </div>
-                        
+                        <div
+                            className="diagnose-button"
+                            style={{ display: selectedSymptoms.length > 0 ? 'block' : 'none' }}
+                            onClick={getPrediction}
+                        >
+                            Get Prediction
+                        </div>
                         {infoMessage && (
                             <div className="mt-8 text-center text-sm p-4 bg-yellow-100 text-yellow-800 rounded-lg shadow-sm">
                                 {infoMessage}
