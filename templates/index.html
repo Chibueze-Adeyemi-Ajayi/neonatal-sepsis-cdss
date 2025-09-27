@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepsis CDSystem</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX transformation -->
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        :root {
+            --primary-color: #059669;
+            --primary-color-light: #34d399;
+            --primary-color-dark: #047857;
+        }
+        .bg-primary { background-color: var(--primary-color) !important; }
+        .bg-primary-light { background-color: var(--primary-color-light) !important; }
+        .bg-primary-dark { background-color: var(--primary-color-dark) !important; }
+        .text-primary { color: var(--primary-color) !important; }
+        .border-primary { border-color: var(--primary-color) !important; }
+        .hover\:bg-primary-dark:hover { background-color: var(--primary-color-dark) !important; }
+        .focus\:ring-primary:focus { box-shadow: 0 0 0 3px rgba(5,150,105,0.3) !important; }
+    </style>
+</head>
+<body class="bg-primary-light p-4">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Main App component
+        const App = () => {
+            // List of all unique symptoms extracted from the provided dataset
+            const allSymptoms = [
+                "Abdominal Pain",
+                "Abdominal Swelling",
+                "Abnormal Body Movement",
+                "Abnormal Crying",
+                "Baby has not been breathing well",
+                "Baby has not been feeding well",
+                "Baby has not been sucking well",
+                "Baby is feeling restless",
+                "Baby is in Distress",
+                "Bluish-black dislocation of feet and hand",
+                "Changes in Body Temperature",
+                "Cold hands and feet",
+                "Colourish Skin",
+                "Decreased Bowel Movement",
+                "Diarrhea",
+                "Difficulty in Breathing",
+                "Excessive Crying",
+                "Fast Breathing",
+                "Fast Heart Rate",
+                "Fever",
+                "Fever After Delivery",
+                "Frequent cry and stops after attempt of feeding",
+                "Inability to respond adequately",
+                "Irregular Breathing",
+                "Irregular pauses in breathing",
+                "Limp at Birth",
+                "Low Blood Sugar",
+                "Low Heart Rate",
+                "No body movement",
+                "Noisy Breathing",
+                "Passage of Stool",
+                "Persistent Crying",
+                "Poor Cry",
+                "Poor Feeding",
+                "Poor Muscle Tone",
+                "Poor Suck",
+                "Prematurity",
+                "Prolonged PROM",
+                "Rashes",
+                "Reduced Body Movement",
+                "Reduced Sucking",
+                "Refusal to Suck",
+                "Respiratory Distress",
+                "Restlessness",
+                "Risk for Sepsis",
+                "Seizures",
+                "Slow Heart Rate",
+                "Stooling",
+                "Swelling at the lateral region of the neck",
+                "Swollen Belly",
+                "Weak Breathing",
+                "Weak Cry",
+                "Yellow Eyes",
+                "Yellowish Skin"
+            ];
+
+            // State to hold the currently selected symptoms
+            const [selectedSymptoms, setSelectedSymptoms] = React.useState([]);
+            // State for the prediction result
+            const [predictionResult, setPredictionResult] = React.useState(null);
+            // State for displaying the informational message
+            const [infoMessage, setInfoMessage] = React.useState(null);
+            // State to control the visibility of the pop-up
+            const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+            // Function to handle checkbox changes
+            const handleSymptomChange = (symptom) => {
+                setSelectedSymptoms(prevSelected => {
+                    if (prevSelected.includes(symptom)) {
+                        return prevSelected.filter(s => s !== symptom);
+                    } else {
+                        return [...prevSelected, symptom];
+                    }
+                });
+                setPredictionResult(null); // Clear previous result on change
+                setInfoMessage(null); // Clear info message on change
+            };
+
+            // Function to process symptoms and get a prediction
+            const getPrediction = async () => {
+                setPredictionResult("Loading...");
+                setIsModalOpen(true); // Open the modal immediately with a loading message
+
+                try {
+                    // Send the symptoms to the Flask backend for diagnosis
+                    const response = await fetch('/diagnose', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ symptoms: selectedSymptoms }),
+                    });
+
+                    // Check if the response is successful
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    // Parse the JSON response
+                    const data = await response.json();
+                    
+                    // Update the prediction result with the response from the backend
+                    setPredictionResult(data.prediction);
+                    setInfoMessage(null);
+                } catch (error) {
+                    // Handle any errors during the fetch request
+                    console.error("Error fetching prediction:", error);
+                    setPredictionResult("Error: Could not connect to backend.");
+                    setInfoMessage("Please ensure your Flask backend is running and the '/diagnose' route is configured correctly.");
+                }
+            };
+
+            // Modal component to display the prediction
+            const PredictionModal = ({ prediction, isOpen, onClose }) => {
+                if (!isOpen) return null;
+            
+                return (
+                    <div className="fixed inset-0 bg-primary-dark bg-opacity-60 overflow-y-auto h-full w-full flex items-center justify-center">
+                        <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-auto relative">
+                            <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 text-primary hover:text-primary-dark transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                            <div className="text-center">
+                                <h3 className="text-2xl font-bold text-primary mb-4">Prediction Result</h3>
+                                {prediction === "Loading..." ? (
+                                    <p className="text-xl text-primary opacity-70">{prediction}</p>
+                                ) : (
+                                    <p className="text-3xl font-bold text-primary font-mono">{prediction}</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-primary-light flex items-center justify-center p-4 font-sans">
+                    <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
+                        <h1 className="text-3xl font-bold text-center text-primary mb-6">Neonatal Sepsis CDSystem</h1>
+                        <p className="text-center text-primary mb-8 opacity-80">
+                            Select your baby's symptoms below to get a preliminary assessment.
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                            {allSymptoms.map((symptom, index) => (
+                                <div key={index} className="flex items-center space-x-3 bg-primary-light bg-opacity-10 p-3 rounded-lg border border-primary hover:bg-primary-light transition duration-200">
+                                    <input
+                                        type="checkbox"
+                                        id={`symptom-${index}`}
+                                        checked={selectedSymptoms.includes(symptom)}
+                                        onChange={() => handleSymptomChange(symptom)}
+                                        className="h-5 w-5 text-primary bg-white border-primary rounded focus:ring-primary"
+                                    />
+                                    <label htmlFor={`symptom-${index}`} className="text-primary select-none">
+                                        {symptom}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex justify-center">
+                            <button
+                                onClick={getPrediction}
+                                disabled={selectedSymptoms.length === 0}
+                                className={`
+                                    px-8 py-3 rounded-full text-white font-semibold transition-all duration-300
+                                    ${selectedSymptoms.length > 0
+                                        ? 'bg-primary hover:bg-primary-dark transform hover:scale-105 shadow-md'
+                                        : 'bg-primary opacity-50 cursor-not-allowed'
+                                    }
+                                `}
+                            >
+                                Get Prediction
+                            </button>
+                        </div>
+                        
+                        {infoMessage && (
+                            <div className="mt-8 text-center text-sm p-4 bg-yellow-100 text-yellow-800 rounded-lg shadow-sm">
+                                {infoMessage}
+                            </div>
+                        )}
+                    </div>
+                    <PredictionModal
+                        prediction={predictionResult}
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                    />
+                </div>
+            );
+        };
+
+        // Mount the App component
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
