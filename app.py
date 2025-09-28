@@ -10,6 +10,14 @@ app = Flask(__name__)
 
 nlp = None
 
+def getAccuracy(model, predictions):
+    print(model, predictions)
+    acc = random.uniform(
+        (predictions.len() - 1) * 20, 
+        (predictions.len() - 1) * 2 + 4
+    )
+    return round(acc, 2)
+
 def convertTextToVec (text):
     # print(text)
     doc = nlp(str(text).lower())
@@ -52,6 +60,9 @@ def diagnose():
         symptoms = ",".join(symptoms)
         
         symptoms=[symptoms]
+
+        if (nlp == None):
+            return jsonify({'error': 'NLP model not found.'}), 404
         
         user_df = pd.DataFrame(symptoms, columns=['symptoms'])
         user_df["input-symptoms"] = user_df["symptoms"].apply(lambda text: convertTextToVec(text))
@@ -105,11 +116,3 @@ if __name__ == '__main__':
     # df["diagnosis"] = df["DIAGNOSIS"].apply(lambda text: mapLabel(text))
 
     app.run(debug=True)
-
-def getAccuracy(model, predictions):
-    print(model, predictions)
-    acc = random.uniform(
-        (predictions.len() - 1) * 20, 
-        (predictions.len() - 1) * 2 + 4
-    )
-    return round(acc, 2)
