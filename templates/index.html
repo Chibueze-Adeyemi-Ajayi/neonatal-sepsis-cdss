@@ -146,6 +146,7 @@
             const [selectedSymptoms, setSelectedSymptoms] = React.useState([]);
             // State for the prediction result
             const [predictionResult, setPredictionResult] = React.useState(null);
+            const [accuracy, setAccuracy] = React.useState(null);
             // State for displaying the informational message
             const [infoMessage, setInfoMessage] = React.useState(null);
             // State to control the visibility of the pop-up
@@ -189,6 +190,7 @@
                     
                     // Update the prediction result with the response from the backend
                     setPredictionResult(data.prediction);
+                    setAccuracy(data.accuracy);
                     setInfoMessage(null);
                 } catch (error) {
                     // Handle any errors during the fetch request
@@ -218,7 +220,10 @@
                                 {prediction === "Loading..." ? (
                                     <p className="text-xl text-gray-500">{prediction}</p>
                                 ) : (
-                                    <p className="text-3xl font-bold text-indigo-600 font-mono">{prediction}</p>
+                                    <div className="space-y-4 flex flex-col items-center">
+                                        <p className="text-3xl font-bold text-indigo-600 font-mono">{prediction}</p>
+                                        <p className="text-3xl text-[#10b981] font-extrabold text-indigo-600 font-mono">{accuracy}</p>
+                                    </div>
                                 )}
                             </div>
                         </div>
