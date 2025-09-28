@@ -8,6 +8,8 @@ from flask import Flask, request, jsonify, render_template
 # Initialize the Flask application
 app = Flask(__name__)
 
+nlp = None
+
 def convertTextToVec (text):
     # print(text)
     doc = nlp(str(text).lower())
@@ -16,7 +18,7 @@ def convertTextToVec (text):
 def stackVector (vector):
     return np.stack(vector)
 
-def mapLabel (self, text):
+def mapLabel (text):
     if text == "NNS":
         return 1
     elif text == "PROBABLE-NNS":
@@ -84,9 +86,8 @@ def diagnose():
 
     except Exception as e:
         print(f"An error occurred: {e}")
+        print(e)
         return jsonify({'error': 'An internal server error occurred.'}), 500
-
-nlp = None
 
 # Run the app if the script is executed directly
 if __name__ == '__main__':
