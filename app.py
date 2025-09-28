@@ -59,12 +59,15 @@ def diagnose():
         stacked_symptoms = stackVector(user_df["input-symptoms"])
         
         path = os.path.join(app.root_path, "random_forest_model.joblib")
-        
+
         rf_model = joblib.load(path)
         # print(stacked_symptoms)
 
         predictions = rf_model.predict(stacked_symptoms)
 
+        if (rf_model == None):
+            return jsonify({'error': 'Model not loaded.'}), 404
+        
         cds_diagnosis = ["Uncategorized", "Neonatal Sepsis", "Probable NNS", "Late NNS", "Early NNS"]
         
         print(predictions[0])
