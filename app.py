@@ -13,10 +13,11 @@ spacy.cli.download("en_core_web_sm")
 nlp = spacy.load("en_core_web_sm")
 
 def getAccuracy(model, predictions):
-    print(model, predictions)
+    len_of_predictions = len(predictions)
+    print(model, predictions, len_of_predictions)
     acc = random.uniform(
-        ((len(predictions) - 1) * 20),
-        ((len(predictions) - 1) * 2) + 4
+        ((len_of_predictions - 1) * 20),
+        ((len_of_predictions - 1) * 2) + 4
     )
     return round(acc, 2)
 
