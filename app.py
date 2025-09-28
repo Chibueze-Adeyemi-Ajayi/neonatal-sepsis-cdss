@@ -17,7 +17,8 @@ nlp = spacy.load("en_core_web_sm")
 
 def train_model():
 
-    df = pd.read_csv("/notebook/augmented-dataset-2.csv")
+    path = os.path.join(app.root_path, "/notebook/augmented-dataset-2.csv")
+    df = pd.read_csv(path)
 
     df["symptoms-age"] = df["SYMPTOMS"] + " " + df["AGE"]
     df["symptoms"] = df["symptoms-age"].apply(lambda text: convertTextToVec(text))
