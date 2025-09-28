@@ -8,6 +8,8 @@ from flask import Flask, request, jsonify, render_template
 # Initialize the Flask application
 app = Flask(__name__)
 
+spacy.cli.download("en_core_web_sm")
+
 nlp = spacy.load("en_core_web_sm")
 
 def getAccuracy(model, predictions):
