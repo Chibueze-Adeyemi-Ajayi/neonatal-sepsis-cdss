@@ -117,6 +117,8 @@ def diagnose():
 
         predictions = rf_model.predict(stacked_symptoms)
 
+        print(predictions)
+
         if (rf_model == None):
             return jsonify({'error': 'Model not loaded.'}), 404
         

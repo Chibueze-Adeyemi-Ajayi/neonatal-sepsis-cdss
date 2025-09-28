@@ -86,19 +86,60 @@
         const App = () => {
             // List of all unique symptoms extracted from the provided dataset
             const allSymptoms = [
-                "Poor Feeding or Reduced Sucking",
-                "Lethargy or Reduced Spontaneous Activity",
-                "Temperature Instability (Fever or Hypothermia)",
-                "Breathing Problems or Apnea (pauses in breathing)",
-                "Irritability or Increased Crankiness",
-                "Vomiting or Diarrhea",
-                "Jaundice (Yellowing of Skin/Eyes)",
-                "Abdominal Distention (Swollen Belly)",
-                "Changes in Heart Rate (Fast or Slow)",
-                "Cold or Clammy Skin",
-                "Pale or Mottled Skin",
+                "Abdominal Pain",
+                "Abdominal Swelling",
+                "Abnormal Body Movement",
+                "Abnormal Crying",
+                "Baby has not been breathing well",
+                "Baby has not been feeding well",
+                "Baby has not been sucking well",
+                "Baby is feeling restless",
+                "Baby is in Distress",
+                "Bluish-black dislocation of feet and hand",
+                "Changes in Body Temperature",
+                "Cold hands and feet",
+                "Colourish Skin",
+                "Decreased Bowel Movement",
+                "Diarrhea",
+                "Difficulty in Breathing",
+                "Excessive Crying",
+                "Fast Breathing",
+                "Fast Heart Rate",
+                "Fever",
+                "Fever After Delivery",
+                "Frequent cry and stops after attempt of feeding",
+                "Inability to respond adequately",
+                "Irregular Breathing",
+                "Irregular pauses in breathing",
+                "Limp at Birth",
+                "Low Blood Sugar",
+                "Low Heart Rate",
+                "No body movement",
+                "Noisy Breathing",
+                "Passage of Stool",
+                "Persistent Crying",
+                "Poor Cry",
+                "Poor Feeding",
+                "Poor Muscle Tone",
+                "Poor Suck",
+                "Prematurity",
+                "Prolonged PROM",
+                "Rashes",
+                "Reduced Body Movement",
+                "Reduced Sucking",
+                "Refusal to Suck",
+                "Respiratory Distress",
+                "Restlessness",
+                "Risk for Sepsis",
                 "Seizures",
-                "Bulging Fontanelle (Soft Spot on Head)"
+                "Slow Heart Rate",
+                "Stooling",
+                "Swelling at the lateral region of the neck",
+                "Swollen Belly",
+                "Weak Breathing",
+                "Weak Cry",
+                "Yellow Eyes",
+                "Yellowish Skin"
             ];
 
             // State to hold the currently selected symptoms
@@ -200,7 +241,7 @@
                         </p>
                     </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8">
                             {allSymptoms.map((symptom, index) => (
                                 <div key={index} className="symptom-item flex flex-row space-x-3">
                                     <input
