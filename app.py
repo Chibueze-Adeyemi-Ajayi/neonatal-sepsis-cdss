@@ -95,7 +95,7 @@ def diagnose():
 
             print("The diagnosed ailment is: ", cds_diagnosis[prediction])
         
-            return jsonify({'message': 'Symptoms received successfully', 'symptoms': symptoms, 'prediction': ailment, 'accuracy': f"{getAccuracy(rf_model, predictions)}%"})
+            return jsonify({'message': 'Symptoms received successfully', 'symptoms': symptoms, 'prediction': ailment, 'accuracy': f"{getAccuracy(rf_model, cds_diagnosis)}%"})
 
     except Exception as e:
         print(f"An error occurred: {e}")
