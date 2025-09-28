@@ -1,4 +1,5 @@
 import numpy as np
+import os
 import spacy
 import joblib
 import pandas as pd
@@ -57,7 +58,7 @@ def diagnose():
         
         stacked_symptoms = stackVector(user_df["input-symptoms"])
         
-        path="random_forest_model.joblib"
+        path = os.path.join(app.root_path, "random_forest_model.joblib")
         
         rf_model = joblib.load(path)
         # print(stacked_symptoms)
