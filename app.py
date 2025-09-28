@@ -1,8 +1,7 @@
 import numpy as np
 import os
-from sklearn.base import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score
 import spacy
 import joblib
 import pandas as pd
